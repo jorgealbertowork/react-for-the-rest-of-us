@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 
 // Components
 import Page from './Page';
@@ -79,7 +80,9 @@ export const ViewSinglePost = (props) => {
         on {date}
       </p>
 
-      <div className='body-content'>{post.body}</div>
+      <div className='body-content'>
+        <ReactMarkdown children={post.body} />
+      </div>
     </Page>
   );
 };
