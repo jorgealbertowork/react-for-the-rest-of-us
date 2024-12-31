@@ -4,6 +4,7 @@ import axios from 'axios';
 
 // Components
 import Page from './Page';
+import LoadingDotsIcon from './LoadingDotsIcon';
 
 export const ViewSinglePost = (props) => {
   const { id } = useParams();
@@ -11,24 +12,30 @@ export const ViewSinglePost = (props) => {
   const [post, setPost] = useState();
 
   useEffect(() => {
+    const cancelRequest = axios.CancelToken.source();
     async function fetchPost() {
       try {
-        const response = await axios.get(`/post/${id}`);
+        const response = await axios.get(`/post/${id}`, {
+          cancelToken: cancelRequest.token
+        });
         if (response.data) {
           setPost(response.data);
           setIsLoading(false);
         }
       } catch (e) {
-        console.log('There was an error.');
+        console.log('There was a problem, or the request was cancelled.');
       }
     }
     fetchPost();
+    return () => {
+      cancelRequest.cancel();
+    };
   }, []);
 
   if (isLoading)
     return (
       <Page title='...'>
-        <p>Loading...</p>
+        <LoadingDotsIcon />
       </Page>
     );
 

@@ -22,11 +22,18 @@ export const Profile = () => {
   });
 
   useEffect(() => {
+    const cancelRequest = axios.CancelToken.source();
     async function fetchData() {
       try {
-        const response = await axios.post(`/profile/${username}`, {
-          token: appState.user.token
-        });
+        const response = await axios.post(
+          `/profile/${username}`,
+          {
+            token: appState.user.token
+          },
+          {
+            cancelToken: cancelRequest.token
+          }
+        );
         if (response.data) {
           setProfileData(response.data);
         }
@@ -35,6 +42,9 @@ export const Profile = () => {
       }
     }
     fetchData();
+    return () => {
+      cancelRequest.cancel();
+    };
   }, []);
 
   return (

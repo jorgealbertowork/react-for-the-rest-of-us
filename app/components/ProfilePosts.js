@@ -4,6 +4,7 @@ import axios from 'axios';
 
 // Contexts
 import StateContext from '../StateContext';
+import LoadingDotsIcon from './LoadingDotsIcon';
 
 export const ProfilePosts = () => {
   const { username } = useParams();
@@ -12,9 +13,14 @@ export const ProfilePosts = () => {
   const appState = useContext(StateContext);
 
   useEffect(() => {
+    const cancelRequest = axios.CancelToken.source();
+
     async function fetchPosts() {
       try {
-        const response = await axios.get(`/profile/${username}/posts`);
+        const response = await axios.get(`/profile/${username}/posts`, {
+          cancelToken: cancelRequest.token
+        });
+
         if (response.data) {
           setPosts(response.data);
           setIsLoading(false);
@@ -23,10 +29,15 @@ export const ProfilePosts = () => {
         console.log('There was an error.');
       }
     }
+
     fetchPosts();
+
+    return () => {
+      cancelRequest.cancel();
+    };
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingDotsIcon />;
 
   return (
     <div className='list-group'>
