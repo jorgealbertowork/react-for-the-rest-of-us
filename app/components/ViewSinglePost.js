@@ -1,11 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
+
+// Components
 import Page from './Page';
 
 export const ViewSinglePost = (props) => {
+  const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [post, setPost] = useState();
+
+  useEffect(() => {
+    async function fetchPost() {
+      try {
+        const response = await axios.get(`/post/${id}`);
+        if (response.data) {
+          setPost(response.data);
+          setIsLoading(false);
+        }
+      } catch (e) {
+        console.log('There was an error.');
+      }
+    }
+    fetchPost();
+  }, []);
+
+  if (isLoading)
+    return (
+      <Page title='...'>
+        <p>Loading...</p>
+      </Page>
+    );
+
+  const rawDate = new Date(post.createdDate);
+  const date = `${rawDate.getFullYear()}/${
+    rawDate.getMonth() + 1
+  }/${rawDate.getDate()}`;
+
   return (
-    <Page title={props.pageTitle}>
+    <Page title={post.title}>
       <div className='d-flex justify-content-between'>
-        <h2>Example Post Title</h2>
+        <h2>{post.title}</h2>
         <span className='pt-2'>
           <a
             href='#'
@@ -24,31 +59,20 @@ export const ViewSinglePost = (props) => {
       </div>
 
       <p className='text-muted small mb-4'>
-        <a href='#'>
+        <Link to={`/profile/${post.author.username}`}>
           <img
             className='avatar-tiny'
-            src='https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128'
+            src={post.author.avatar}
           />
-        </a>
-        Posted by <a href='#'>brad</a> on 2/10/2020
+        </Link>
+        Posted by{' '}
+        <Link to={`/profile/${post.author.username}`}>
+          {post.author.username}
+        </Link>{' '}
+        on {date}
       </p>
 
-      <div className='body-content'>
-        <p>
-          Lorem ipsum dolor sit <strong>example</strong> post adipisicing elit.
-          Iure ea at esse, tempore qui possimus soluta impedit natus voluptate,
-          sapiente saepe modi est pariatur. Aut voluptatibus aspernatur fugiat
-          asperiores at.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae quod
-          asperiores corrupti omnis qui, placeat neque modi, dignissimos, ab
-          exercitationem eligendi culpa explicabo nulla tempora rem? Lorem ipsum
-          dolor sit amet consectetur adipisicing elit. Iure ea at esse, tempore
-          qui possimus soluta impedit natus voluptate, sapiente saepe modi est
-          pariatur. Aut voluptatibus aspernatur fugiat asperiores at.
-        </p>
-      </div>
+      <div className='body-content'>{post.body}</div>
     </Page>
   );
 };
