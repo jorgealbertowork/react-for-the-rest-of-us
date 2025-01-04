@@ -2,3 +2,4 @@ mongodb.md
 node_modules
 package-lock.json
 githubPAT
+.prettierrc
