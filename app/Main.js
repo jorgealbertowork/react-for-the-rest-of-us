@@ -11,6 +11,7 @@ import StateContext from './StateContext';
 // Components
 import About from './components/About';
 import CreatePost from './components/CreatePost';
+import EditPost from './components/EditPost';
 import FlashMessages from './components/FlashMessages';
 import Footer from './components/Footer';
 import Header from './components/Header';
@@ -86,6 +87,10 @@ const App = () => {
             <Route
               path='/post/:id'
               element={<ViewSinglePost />}
+            />
+            <Route
+              path='/post/:id/edit'
+              element={<EditPost />}
             />
             <Route
               path='/about-us'
