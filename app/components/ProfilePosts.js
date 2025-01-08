@@ -18,7 +18,7 @@ export const ProfilePosts = () => {
     async function fetchPosts() {
       try {
         const response = await axios.get(`/profile/${username}/posts`, {
-          cancelToken: cancelRequest.token
+          cancelToken: cancelRequest.token,
         });
 
         if (response.data) {
@@ -35,12 +35,12 @@ export const ProfilePosts = () => {
     return () => {
       cancelRequest.cancel();
     };
-  }, []);
+  }, [username]);
 
   if (isLoading) return <LoadingDotsIcon />;
 
   return (
-    <div className='list-group'>
+    <div className="list-group">
       {posts.map((post, index) => {
         const rawDate = new Date(post.createdDate);
         const date = `${rawDate.getFullYear()}/${
@@ -50,15 +50,12 @@ export const ProfilePosts = () => {
         return (
           <Link
             to={`/post/${post._id}`}
-            className='list-group-item list-group-item-action'
+            className="list-group-item list-group-item-action"
             key={index}
           >
-            <img
-              className='avatar-tiny'
-              src={appState.user.avatar}
-            />
+            <img className="avatar-tiny" src={appState.user.avatar} />
             <strong>{post.title}</strong>{' '}
-            <span className='text-muted small'>on {date} </span>
+            <span className="text-muted small">on {date} </span>
           </Link>
         );
       })}
