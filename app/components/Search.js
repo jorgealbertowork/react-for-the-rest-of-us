@@ -4,6 +4,7 @@ import { useImmer } from 'use-immer';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import StateContext from '../StateContext';
+import Post from './Post';
 
 export const Search = () => {
   const appDispatch = useContext(DispatchContext);
@@ -116,25 +117,13 @@ export const Search = () => {
                   <strong>Search Results</strong> ({state.results.length}{' '}
                   {state.results.length > 1 ? 'items' : 'item'} found)
                 </div>
-                {state.results.map((post, index) => {
-                  const rawDate = new Date(post.createdDate);
-                  const date = `${rawDate.getFullYear()}/${
-                    rawDate.getMonth() + 1
-                  }/${rawDate.getDate()}`;
-
+                {state.results.map((post) => {
                   return (
-                    <Link
-                      to={`/post/${post._id}`}
-                      className="list-group-item list-group-item-action"
-                      key={index}
+                    <Post
+                      post={post}
+                      key={post._id}
                       onClick={() => appDispatch({ type: 'closeSearch' })}
-                    >
-                      <img className="avatar-tiny" src={appState.user.avatar} />
-                      <strong>{post.title}</strong>{' '}
-                      <span className="text-muted small">
-                        by {post.author.username} on {date}
-                      </span>
-                    </Link>
+                    />
                   );
                 })}
               </div>

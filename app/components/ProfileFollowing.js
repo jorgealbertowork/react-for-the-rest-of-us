@@ -5,9 +5,8 @@ import axios from 'axios';
 // Contexts
 import StateContext from '../StateContext';
 import LoadingDotsIcon from './LoadingDotsIcon';
-import Post from './Post';
 
-export const ProfilePosts = () => {
+export const ProfileFollowing = () => {
   const { username } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState([]);
@@ -18,7 +17,7 @@ export const ProfilePosts = () => {
 
     async function fetchPosts() {
       try {
-        const response = await axios.get(`/profile/${username}/posts`, {
+        const response = await axios.get(`/profile/${username}/following`, {
           cancelToken: cancelRequest.token,
         });
 
@@ -42,11 +41,20 @@ export const ProfilePosts = () => {
 
   return (
     <div className="list-group">
-      {posts.map((post) => {
-        return <Post post={post} key={post._id} hideAuthor={true} />;
+      {posts.map((following, index) => {
+        return (
+          <Link
+            to={`/profile/${following.username}`}
+            className="list-group-item list-group-item-action"
+            key={index}
+          >
+            <img className="avatar-tiny" src={following.avatar} />
+            {following.username}
+          </Link>
+        );
       })}
     </div>
   );
 };
 
-export default ProfilePosts;
+export default ProfileFollowing;
